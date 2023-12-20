@@ -1,3 +1,13 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+        header("Location: login.php");
+        exit();
+}
+
+include "count.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +16,6 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 </head>
 <body>
-    <?php
-    session_start();
-    include "count.php";
-    ?>
     <div class="bg">
         <div class="title">
             <h1>VISITOR COUNTER</h1>
