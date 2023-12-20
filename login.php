@@ -1,3 +1,36 @@
+
+<?php
+    session_start();
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Validasi login pengunjung (misalnya, menggunakan form username/password)
+        $username = $_POST["username"];
+        $password = $_POST["password"];
+
+        // Validasi login pengunjung di sini, jika berhasil, lanjutkan ke langkah berikutnya
+
+        // Simpan informasi pengunjung ke database
+        $conn = pg_connect("host=db dbname=mydatabase user=myuser password=mypassword");
+        $tanggal = date("Y-m-d H:i:s");
+        $userAgent = $_SERVER["HTTP_USER_AGENT"];
+        $chrome = '/Chrome/';
+        $firefox = '/Firefox/';
+        $ie = '/IE/';
+        if (preg_match($chrome, $userAgent))
+            $data = "Chrome/Opera";
+        if (preg_match($firefox, $userAgent))
+            $data = "Firefox";
+        if (preg_match($ie, $userAgent))
+            $data = "IE";
+        $userAgent = $data;
+        $query = "INSERT INTO visitor (username, password, tanggal, user_agent) VALUES ('$username', '$password', '$tanggal', '$userAgent')";
+        pg_query($conn, $query);
+
+        // Redirect ke halaman utama dengan informasi pengunjung
+        header("Location: index.php?username=$username&tanggal=$tanngal&user_agent=$userAgent");
+        exit;
+    }
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,35 +77,3 @@
     </svg>
 </body>
 </html>
-
-<?php
-    session_start();
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Validasi login pengunjung (misalnya, menggunakan form username/password)
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-
-        // Validasi login pengunjung di sini, jika berhasil, lanjutkan ke langkah berikutnya
-
-        // Simpan informasi pengunjung ke database
-        $conn = pg_connect("host=localhost dbname=vcount user=postgres password=1234");
-        $tanggal = date("Y-m-d H:i:s");
-        $userAgent = $_SERVER["HTTP_USER_AGENT"];
-        $chrome = '/Chrome/';
-        $firefox = '/Firefox/';
-        $ie = '/IE/';
-        if (preg_match($chrome, $userAgent))
-            $data = "Chrome/Opera";
-        if (preg_match($firefox, $userAgent))
-            $data = "Firefox";
-        if (preg_match($ie, $userAgent))
-            $data = "IE";
-        $userAgent = $data;
-        $query = "INSERT INTO visitor (username, password, tanggal, user_agent) VALUES ('$username', '$password', '$tanggal', '$userAgent')";
-        pg_query($conn, $query);
-
-        // Redirect ke halaman utama dengan informasi pengunjung
-        header("Location: index.php?username=$username&tanggal=$tanngal&user_agent=$userAgent");
-        exit;
-    }
-    ?>
